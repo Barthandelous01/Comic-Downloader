@@ -26,6 +26,7 @@ XKCD=DIRECTORY + '/xkcd'
 DILBERT=DIRECTORY + '/dilbert'
 FAR_SIDE=DIRECTORY + '/far_side'
 GARFIELD=DIRECTORY + '/garfield'
+BC=DIRECTORY + '/bc'
 
 # Styling for CLI
 style = style_from_dict({
@@ -59,6 +60,9 @@ questions = [
             Separator('= Not Geeky ='),
             {
                 'name': 'Garfield'
+            },
+            {
+                'name': 'BC'
             }
         ]
     }
@@ -75,6 +79,8 @@ def parse_list(list):
             get_garfield()
         elif x == 'The Far Side':
             get_far_side()
+        elif x == 'BC':
+            get_bc()
 
 
 # Directory function check
@@ -97,6 +103,12 @@ def check_files():
     else:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Garfield directory found')
 
+    if(not path.isdir(BC)):
+        print(Fore.RED + '::' + Style.RESET_ALL + ' BC directory not found, creating')
+        os.makedirs(BC)
+    else:
+        print(Fore.GREEN + '::' + Style.RESET_ALL + ' BC directory found')
+
     if(not path.isdir(FAR_SIDE)):
         print(Fore.RED + '::' + Style.RESET_ALL + ' The Far Side directory not found, creating')
         os.makedirs(FAR_SIDE)
@@ -106,9 +118,19 @@ def check_files():
 
 # return soup object from url
 def scrape(url):
-    http = urllib3.PoolManager()
-    html = http.request('GET', url)
-    return BeautifulSoup(html.data, 'html.parser')
+    try:
+        http = urllib3.PoolManager()
+        html = http.request('GET', url)
+        return BeautifulSoup(html.data, 'html.parser')
+    except (urllib3.exceptions.NewConnectionError, KeyboardInterrupt):
+        print(Fore.RED + '::' + Style.RESET_ALL + ' Network change detected. Aborting.')
+        exit(1)
+    except socket.gaierror as err:
+        print(str(err))
+        print(Fore.RED + '::' + Style.RESET_ALL + ' The preceding error occured. Aborting.')
+        exit(1)
+    except:
+        print(Fore.RED + '::' + Style.RESET_ALL + ' An error occured. Aborting.')
 
 def ping():
     result = os.system('ping -c 3 archlinux.org >/dev/null')
@@ -123,11 +145,12 @@ def get_xkcd():
     img_url = regex.search(str(soup))
     x = datetime.datetime.now()
     print('==> Downloading image')
-    result = os.system('curl -# https://imgs.xkcd.com/' + img_url.group() + ' > ' + XKCD + '/' + str(x.month) + '-' + str(x.day) + '-' + str(x.year) + '.png')
+    result = os.system('curl -m 10 -# https://imgs.xkcd.com/' + img_url.group() + ' > ' + XKCD + '/' + str(x.month) + '-' + str(x.day) + '-' + str(x.year) + '.png')
     if result == 0:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Comic downloaded!')
     else:
         print(Fore.RED + '::' + Style.RESET_ALL + ' Error encountered. Comic not downloaded.')
+        exit(1)
 
 
 
@@ -140,11 +163,12 @@ def get_dilbert():
     img_url = regex.search(str(soup))
     x = datetime.datetime.now()
     print('==> Downloading image')
-    result = os.system('curl -# https://' + img_url.group() + ' > ' + DILBERT + '/' + str(x.month) + '-' + str(x.day) + '-' + str(x.year) + '.png')
+    result = os.system('curl -# -m 10 https://' + img_url.group() + ' > ' + DILBERT + '/' + str(x.month) + '-' + str(x.day) + '-' + str(x.year) + '.png')
     if result == 0:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Comic downloaded!')
     else:
         print(Fore.RED + '::' + Style.RESET_ALL + ' Error encountered. Comic not downloaded.')
+        exit(1)
 
 # Get garfield function
 def get_garfield():
@@ -156,11 +180,12 @@ def get_garfield():
     img_url = regex.search(str(test))
     x = datetime.datetime.now()
     print('==> Downloading image')
-    result = os.system('curl -# ' + img_url.group() + ' > ' + GARFIELD + '/' + str(x.month) + '-' + str(x.day) + '-' + str(x.year) + '.gif')
+    result = os.system('curl -# -m 10 ' + img_url.group() + ' > ' + GARFIELD + '/' + str(x.month) + '-' + str(x.day) + '-' + str(x.year) + '.gif')
     if result == 0:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Comic downloaded!')
     else:
         print(Fore.RED + '::' + Style.RESET_ALL + ' Error encountered. Comic not downloaded.')
+        exit(1)
 
 # Get the far side function
 def get_far_side():
@@ -172,12 +197,35 @@ def get_far_side():
     img_url = regex.search(str(test))
     x = datetime.datetime.now()
     print('==> Downloading image')
-    result = os.system('curl -# ' + img_url.group() + ' > ' + FAR_SIDE + '/' + str(x.month) + '-' + str(x.day) + '-' + str(x.year) + '.jpg')
+    result = os.system('curl -# -m 10 ' + img_url.group() + ' > ' + FAR_SIDE + '/' + str(x.month) + '-' + str(x.day) + '-' + str(x.year) + '.jpg')
     if result == 0:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Comic downloaded!')
     else:
         print(Fore.RED + '::' + Style.RESET_ALL + ' Error encountered. Comic not downloaded.')
+        exit(1)
 
+#get BC comic function
+def get_bc():
+    print('==> Downloading website')
+    soup = scrape('https://johnhartstudios.com/bc/')
+    test = soup.find('div', attrs={'class': 'entry-content'})
+    print('==> Finding image url')
+    regex = re.compile(R'/bcstrips/.*\.jpg')
+    img_url = regex.search(str(test))
+    x = datetime.datetime.now()
+    print('==> Downloading image')
+    result = os.system('curl -# -m 10 https://johnhartstudios.com/' + img_url.group() + ' > ' + BC + '/' + str(x.month) + '-' + str(x.day) + '-' + str(x.year) + '.jpg')
+    if result == 0:
+        print(Fore.GREEN + '::' + Style.RESET_ALL + ' Comic downloaded!')
+    else:
+        print(Fore.RED + '::' + Style.RESET_ALL + ' Error encountered. Comic not downloaded.')
+        exit(1)
+
+# CLI comic names list
+def list_give():
+    print('Options are:\nDilbert\nGarfield\nFarSide\nXKCD\nBC')
+
+# CLI interface comic getting thing
 def cli_get(test):
     check_files()
     for x in test:
@@ -187,10 +235,12 @@ def cli_get(test):
             get_garfield()
         elif x == 'FarSide':
             get_far_side()
-        elif x == 'XKCD' | 'xkcd':
+        elif x == 'XKCD':
             get_xkcd()
-        elif x == '-h' | '--help':
-            print('Options are: Dilbert, Garfield, FarSide, (XKCD | xkcd)')
+        elif x == 'BC':
+            get_bc()
+        elif x == 'h' | 'help':
+            print('Options are: Dilbert, Garfield, FarSide, XKCD, BC')
         else:
             print(Fore.RED + '::' + Style.RESET_ALL + ' Comic not known: ' + str(x))
     exit()
@@ -206,16 +256,19 @@ def main():
     my_parser.add_argument('-c', '--check', action='store_true', help='Turn off automatic directory checks (may cause errors)') # argument to disregard directory checks
     my_parser.add_argument('-d', '--download', type=str, help='Download a comic without the fancy GUI. Implies -q', nargs='+')
     my_parser.add_argument('-v', '--version', action='version', help='show version')
+    my_parser.add_argument('-l', '--list', action='store_true', help='list CLI args for --download')
     args = my_parser.parse_args()
 
-
+    if args.list == True:
+        list_give()
+        exit()
     # Do CLI download check
     if args.download != None:
         cli_get(args.download)
 
     # Render welcome banner
     if not args.quiet: # check for silent option
-        f = Figlet(font='slant')
+        f = Figlet(font='speed')
         print(f.renderText('Download Comics'))
 
     # Runs prompt code to get comics to download
@@ -236,8 +289,11 @@ def main():
         exit(1)
     else:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Wifi connection found!')
-        # Run actual download code
-    parse_list(list)
+    # Run actual download code
+    try:
+        parse_list(list)
+    except KeyboardInterrupt:
+        print('==> Aborting')
 
 
 if __name__ == '__main__':

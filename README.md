@@ -23,4 +23,4 @@ The `-h` option will show all options.
 
 ## Breakage
 All errors and exceptions that can be raised, whether they be `KeyboardInterrupt`s, `gaisocket.error`s, or what have you-s, have been handled elegantly and gracefully. 
-The only thing that is inelegant (though its effects are beautiful) is the termination of the code through a lack of internet. Read the extensive comment in the function `ping()` for more information.
+The only thing that is inelegant (though its effects are beautiful) is the termination of the code through a lack of internet. Read the extensive comment in the function `ping(pid)` for more information.

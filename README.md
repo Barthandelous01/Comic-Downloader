@@ -22,9 +22,5 @@ $ ./cmx.py
 The `-h` option will show all options.
 
 ## Breakage
-The only time this application breaks is when a network change happens during this segment of output:
-```
-:: Comic downloaded!
-==> Downloading website
-```
-This causes `urllib3` to throw an uncatchable error. All other exceptions are handled gracefully in their respective functions.
+All errors and exceptions that can be raised, whether they be `KeyboardInterrupt`s, `gaisocket.error`s, or what have you-s, have been handled elegantly and gracefully. 
+The only thing that is inelegant (though its effects are beautiful) is the termination of the code through a lack of internet. Read the extensive comment in the function `ping()` for more information.

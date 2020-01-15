@@ -14,6 +14,7 @@ import re
 import datetime
 import argparse
 import sys
+import threading
 
 
 # Directory variables for storage of comics
@@ -27,6 +28,8 @@ DILBERT=DIRECTORY + '/dilbert'
 FAR_SIDE=DIRECTORY + '/far_side'
 GARFIELD=DIRECTORY + '/garfield'
 BC=DIRECTORY + '/bc'
+BLONDE=DIRECTORY + '/blonde'
+BEETLE=DIRECTORY + '/beetle'
 
 # Styling for CLI
 style = style_from_dict({
@@ -53,7 +56,6 @@ questions = [
             {
                 'name': 'Dilbert'
             },
-            Separator('= Less-Geeky ='),
             {
                 'name': 'The Far Side'
             },
@@ -63,8 +65,14 @@ questions = [
             },
             {
                 'name': 'BC'
-            }
-        ]
+             }#,
+        #     {
+        #         'name': 'Blonde'
+        #     },
+        #     {
+        #         'name': 'Beetle Bailey'
+        #     }
+         ]
     }
 ]
 
@@ -81,6 +89,10 @@ def parse_list(list):
             get_far_side()
         elif x == 'BC':
             get_bc()
+        # elif x == 'Beetle Bailey':
+        #     get_beetle()
+        # elif x == 'Blonde':
+        #     get_blonde()
 
 
 # Directory function check
@@ -115,6 +127,20 @@ def check_files():
     else:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Far side directory found')
 
+    # if(not path.isdir(BLONDE)):
+    #     print(Fore.RED + '::' + Style.RESET_ALL + '  Blonde directory not found, creating')
+    #     os.makedirs(BLONDE)
+    # else:
+    #     print(Fore.GREEN + '::' + Style.RESET_ALL + ' Blonde directory found')
+
+    # if(not path.isdir(BEETLE)):
+    #     print(Fore.RED + '::' + Style.RESET_ALL + '  Beetle Bailey directory not found, creating')
+    #     os.makedirs(BEETLE)
+    # else:
+    #     print(Fore.GREEN + '::' + Style.RESET_ALL + ' Beetle Bailey directory found')
+
+
+
 
 # return soup object from url
 def scrape(url):
@@ -122,21 +148,42 @@ def scrape(url):
         http = urllib3.PoolManager()
         html = http.request('GET', url)
         return BeautifulSoup(html.data, 'html.parser')
-    except (urllib3.exceptions.NewConnectionError, KeyboardInterrupt):
-        print(Fore.RED + '::' + Style.RESET_ALL + ' Network change detected. Aborting.')
-        exit(1)
-    except socket.gaierror as err:
-        print(str(err))
-        print(Fore.RED + '::' + Style.RESET_ALL + ' The preceding error occured. Aborting.')
-        exit(1)
     except:
         print(Fore.RED + '::' + Style.RESET_ALL + ' An error occured. Aborting.')
+        exit(1)
 
+# Network test function
 def ping():
     result = os.system('ping -c 3 archlinux.org >/dev/null')
-    return result
+    if result != 0:
+        print(Fore.RED + '::' + Style.RESET_ALL + ' No wifi connection. Aborting.')
+        exit()
+    else:
+        print(Fore.GREEN + '::' + Style.RESET_ALL + ' Wifi connection found!')
 
-# Get XKCD function
+
+# Get Beetle Bailey
+# def get_beetle():
+#     print('==> Downloading website')
+#     soup = scrape('https://www.comicskingdom.com/beetle-bailey-1')
+#     test = soup.find('div', attrs={'class': 'cv-img'})
+#     print('==> Finding image url')
+#     regex = re.compile(R'https://.*\=\=')
+#     img_url = regex.search(str(test))
+#     x = datetime.datetime.now()
+#     print('==> Downloading image')
+#     result = os.system('curl -m 10 -# ' + img_url.group() + ' > ' + BEETLE + '/' + str(x.month) + '-' + str(x.day) + '-' + str(x.year) + '.gif')
+#     if result == 0:
+#         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Comic downloaded!')
+#     else:
+#         print(Fore.RED + '::' + Style.RESET_ALL + ' Error encountered. Comic not downloaded.')
+#         exit(1)
+
+# # Get Blonde function
+# def get_blonde():
+#     print('stuff')
+
+# # Get XKCD function
 def get_xkcd():
     print('==> Downloading website')
     soup = scrape('https://www.xkcd.com')
@@ -223,7 +270,7 @@ def get_bc():
 
 # CLI comic names list
 def list_give():
-    print('Options are:\nDilbert\nGarfield\nFarSide\nXKCD\nBC')
+    print('Options are:\nDilbert\nGarfield\nFarSide\nXKCD\nBC\nBeetle\nBlonde')
 
 # CLI interface comic getting thing
 def cli_get(test):
@@ -239,6 +286,8 @@ def cli_get(test):
             get_xkcd()
         elif x == 'BC':
             get_bc()
+        # elif x == 'Beetle':
+        #     get_beetle()
         elif x == 'h' | 'help':
             print('Options are: Dilbert, Garfield, FarSide, XKCD, BC')
         else:
@@ -266,13 +315,20 @@ def main():
     if args.download != None:
         cli_get(args.download)
 
+    # Non-thread bound ping. Increases speed!
+    pi = threading.Thread(target=ping)
+    pi.start()
+
     # Render welcome banner
     if not args.quiet: # check for silent option
         f = Figlet(font='speed')
         print(f.renderText('Download Comics'))
 
     # Runs prompt code to get comics to download
-    answers = prompt(questions, style=style)
+    try:
+        answers = prompt(questions, style=style)
+    except ValueError:
+        exit()
     try:
         list = answers['Comics']
     except:
@@ -283,12 +339,9 @@ def main():
     if not args.check: # allow for lack of directory check
         check_files()
 
-    # check for internet
-    if ping() != 0:
-        print(Fore.RED + '::' + Style.RESET_ALL + ' No wifi connection. Aborting.')
-        exit(1)
-    else:
-        print(Fore.GREEN + '::' + Style.RESET_ALL + ' Wifi connection found!')
+    # check for internet thread joins
+    pi.join()
+
     # Run actual download code
     try:
         parse_list(list)

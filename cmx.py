@@ -5,7 +5,6 @@ import urllib3
 import os.path
 from os import path
 import os
-import tqdm
 import colorama
 from colorama import init, Fore, Back, Style
 from bs4 import BeautifulSoup
@@ -17,7 +16,9 @@ import sys
 import threading
 
 
-# Directory variables for storage of comics
+###############
+# DIRECTORIES #
+###############
 
 # main directory
 DIRECTORY='comics'
@@ -30,6 +31,10 @@ GARFIELD=DIRECTORY + '/garfield'
 BC=DIRECTORY + '/bc'
 BLONDE=DIRECTORY + '/blonde'
 BEETLE=DIRECTORY + '/beetle'
+
+################
+# PROMPT DICTS #
+################
 
 # Styling for CLI
 style = style_from_dict({
@@ -70,6 +75,10 @@ questions = [
     }
 ]
 
+##################
+# MAIN FUNCTIONS #
+##################
+
 # List parsing from the list from the prompt. Runs the get_.*() function for each comic.
 def parse_list(list):
     for x in list:
@@ -84,47 +93,21 @@ def parse_list(list):
         elif x == 'BC':
             get_bc()
 
+# file check function
+def check_dir(directory, name):
+    if(not path.isdir(directory)):
+        print(Fore.RED + '::' + Style.RESET_ALL + ' ' + name + ' directory not found, creating')
+        os.makedirs(directory)
+    else:
+        print(Fore.GREEN + '::' + Style.RESET_ALL + ' ' + name + ' directory found')
+
 # Directory function check
 def check_files():
-    if(not path.isdir(XKCD)):
-        print(Fore.RED + '::' + Style.RESET_ALL + ' XKCD directory not found, creating')
-        os.makedirs(XKCD)
-    else:
-        print(Fore.GREEN + '::' + Style.RESET_ALL + ' XKCD directory found')
-
-    if(not path.isdir(DILBERT)):
-        print(Fore.RED + '::' + Style.RESET_ALL + ' Dilbert directory not found, creating')
-        os.makedirs(DILBERT)
-    else:
-        print(Fore.GREEN + '::' + Style.RESET_ALL + ' Dilbert directory found')
-
-    if(not path.isdir(GARFIELD)):
-        print(Fore.RED + '::' + Style.RESET_ALL + ' Garfield directory nout found, creating')
-        os.makedirs(GARFIELD)
-    else:
-        print(Fore.GREEN + '::' + Style.RESET_ALL + ' Garfield directory found')
-
-    if(not path.isdir(BC)):
-        print(Fore.RED + '::' + Style.RESET_ALL + ' BC directory not found, creating')
-        os.makedirs(BC)
-    else:
-        print(Fore.GREEN + '::' + Style.RESET_ALL + ' BC directory found')
-
-    if(not path.isdir(FAR_SIDE)):
-        print(Fore.RED + '::' + Style.RESET_ALL + ' The Far Side directory not found, creating')
-        os.makedirs(FAR_SIDE)
-    else:
-        print(Fore.GREEN + '::' + Style.RESET_ALL + ' Far side directory found')
-
-# return soup object from url
-def scrape(url):
-    try:
-        http = urllib3.PoolManager()
-        html = http.request('GET', url)
-        return BeautifulSoup(html.data, 'html.parser')
-    except:
-        print(Fore.RED + '::' + Style.RESET_ALL + ' An error occured. Aborting.')
-        exit(1)
+    check_dir(XKCD, 'XKCD')
+    check_dir(DILBERT, 'Dilbert')
+    check_dir(GARFIELD, 'Garfield')
+    check_dir(BC, 'BC')
+    check_dir(FAR_SIDE, 'Far Side')
 
 # Network test function
 def ping(pid):
@@ -132,7 +115,7 @@ def ping(pid):
     if result != 0:
         print(Fore.RED + '::' + Style.RESET_ALL + ' No wifi connection found.')
         os.system('kill ' + str(pid) + ' >/dev/null 2>&1') # I really hate this, but it's the only way at the moment.
-                                                           # Ideally, it would raise an exception, but I can't catch it in man
+                                                           # Ideally, it would raise an exception, but I can't catch it in main
                                                            # So, instead, I pass the PID of the main process to it
                                                            # When there is an error, it kills the main thread
                                                            # and then exits itself anyway.
@@ -145,39 +128,58 @@ def ping(pid):
     else:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Wifi connection found!')
 
-# Get XKCD function
-def get_xkcd():
-    print('==> Downloading website')
-    soup = scrape('https://www.xkcd.com')
-    print('==> Finding image url')
-    regex = re.compile(R'/comics/.*\.png')
-    img_url = regex.search(str(soup))
+################################
+# GET COMIC FUNCTION FUNCTIONS #
+################################
+
+# return soup object from url
+def scrape(url):
+    try:
+        http = urllib3.PoolManager()
+        html = http.request('GET', url)
+        return BeautifulSoup(html.data, 'html.parser')
+    except:
+        print(Fore.RED + '::' + Style.RESET_ALL + ' An error occured. Aborting.')
+        exit(1)
+
+# find comic function
+def get_url(regex, soup):
+    regex = re.compile(regex)
+    return regex.search(str(soup))
+
+# download comic function
+def curl_comic(url, directory, extention):
     x = datetime.datetime.now()
-    print('==> Downloading image')
-    result = os.system('curl -m 10 -# https://imgs.xkcd.com/' + img_url.group() + ' > ' + XKCD + '/' + str(x.month) + '-' + str(x.day) + '-' + str(x.year) + '.png')
+    result = os.system('curl -m 10 -# ' + url + ' > ' + directory + '/' +  str(x.month) + '-' + str(x.day) + '-' + str(x.year) + extention + ' 2>/dev/null')
     if result == 0:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Comic downloaded!')
     else:
         print(Fore.RED + '::' + Style.RESET_ALL + ' Error encountered. Comic not downloaded.')
         exit(1)
 
+#######################
+# GET COMIC FUNCTIONS #
+#######################
 
+# Get XKCD function
+def get_xkcd():
+    print('==> Downloading website')
+    soup = scrape('https://www.xkcd.com')
+    print('==> Finding image url')
+    img_url = get_url(R'/comics/.*\.png', soup)
+    print('==> Downloading image')
+    total = 'https://imgs.xkcd.com/' + img_url.group()
+    curl_comic(total, XKCD, '.png')
 
 # Get dilbert function
 def get_dilbert():
     print('==> Downloading website')
     soup = scrape('https://dilbert.com')
     print('==> Finding image url')
-    regex = re.compile(R'assets.amuniversal.com/([a-f]|\d){32}')
-    img_url = regex.search(str(soup))
-    x = datetime.datetime.now()
+    img_url = get_url(R'assets.amuniversal.com/([a-f]|\d){32}', soup)
     print('==> Downloading image')
-    result = os.system('curl -# -m 10 https://' + img_url.group() + ' > ' + DILBERT + '/' + str(x.month) + '-' + str(x.day) + '-' + str(x.year) + '.png')
-    if result == 0:
-        print(Fore.GREEN + '::' + Style.RESET_ALL + ' Comic downloaded!')
-    else:
-        print(Fore.RED + '::' + Style.RESET_ALL + ' Error encountered. Comic not downloaded.')
-        exit(1)
+    total = 'https://' + img_url.group()
+    curl_comic(total, DILBERT, '.png')
 
 # Get garfield function
 def get_garfield():
@@ -185,16 +187,9 @@ def get_garfield():
     soup = scrape('https://garfield.com')
     test = soup.find('img', attrs={'class':'img-responsive'})
     print('==> Finding image url')
-    regex = re.compile(R'https://.*\.gif')
-    img_url = regex.search(str(test))
-    x = datetime.datetime.now()
+    img_url = get_url(R'https://.*\.gif', test)
     print('==> Downloading image')
-    result = os.system('curl -# -m 10 ' + img_url.group() + ' > ' + GARFIELD + '/' + str(x.month) + '-' + str(x.day) + '-' + str(x.year) + '.gif')
-    if result == 0:
-        print(Fore.GREEN + '::' + Style.RESET_ALL + ' Comic downloaded!')
-    else:
-        print(Fore.RED + '::' + Style.RESET_ALL + ' Error encountered. Comic not downloaded.')
-        exit(1)
+    curl_comic(img_url.group(), GARFIELD, '.gif')
 
 # Get the far side function
 def get_far_side():
@@ -202,16 +197,9 @@ def get_far_side():
     soup = scrape('https://www.thefarside.com')
     test = soup.find('picture', attrs={'class': 'tfs-splash-image__image'})
     print('==> Finding image url')
-    regex = re.compile(R'https://.*\.jpg')
-    img_url = regex.search(str(test))
-    x = datetime.datetime.now()
+    img_url = get_url(R'https://.*\.jpg', test)
     print('==> Downloading image')
-    result = os.system('curl -# -m 10 ' + img_url.group() + ' > ' + FAR_SIDE + '/' + str(x.month) + '-' + str(x.day) + '-' + str(x.year) + '.jpg')
-    if result == 0:
-        print(Fore.GREEN + '::' + Style.RESET_ALL + ' Comic downloaded!')
-    else:
-        print(Fore.RED + '::' + Style.RESET_ALL + ' Error encountered. Comic not downloaded.')
-        exit(1)
+    curl_comic(img_url.group(), FAR_SIDE, '.jpg')
 
 #get BC comic function
 def get_bc():
@@ -219,16 +207,15 @@ def get_bc():
     soup = scrape('https://johnhartstudios.com/bc/')
     test = soup.find('div', attrs={'class': 'entry-content'})
     print('==> Finding image url')
-    regex = re.compile(R'/bcstrips/.*\.jpg')
-    img_url = regex.search(str(test))
-    x = datetime.datetime.now()
+    img_url = get_url(R'/bcstrips/.*\.jpg', test)
     print('==> Downloading image')
-    result = os.system('curl -# -m 10 https://johnhartstudios.com/' + img_url.group() + ' > ' + BC + '/' + str(x.month) + '-' + str(x.day) + '-' + str(x.year) + '.jpg')
-    if result == 0:
-        print(Fore.GREEN + '::' + Style.RESET_ALL + ' Comic downloaded!')
-    else:
-        print(Fore.RED + '::' + Style.RESET_ALL + ' Error encountered. Comic not downloaded.')
-        exit(1)
+    total = 'https://johnhartstudios.com/' + img_url.group()
+    curl_comic(total, BC, '.jpg')
+
+
+#########################
+# CLI COMMAND FUNCTIONS #
+#########################
 
 # CLI comic names list
 def list_give():
@@ -236,7 +223,10 @@ def list_give():
 
 # CLI interface comic getting thing
 def cli_get(test):
+    pi = threading.Thread(target=ping, args=(os.getpid(),))
+    pi.start()
     check_files()
+    pi.join()
     for x in test:
         if x == 'Dilbert':
             get_dilbert()
@@ -289,6 +279,7 @@ def main():
 
     # Start ping process now
     pi.start()
+
     # Do directory check
     check_files()
 

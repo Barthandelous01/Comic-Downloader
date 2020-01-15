@@ -65,13 +65,7 @@ questions = [
             },
             {
                 'name': 'BC'
-             }#,
-        #     {
-        #         'name': 'Blonde'
-        #     },
-        #     {
-        #         'name': 'Beetle Bailey'
-        #     }
+             }
          ]
     }
 ]
@@ -127,21 +121,6 @@ def check_files():
     else:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Far side directory found')
 
-    # if(not path.isdir(BLONDE)):
-    #     print(Fore.RED + '::' + Style.RESET_ALL + '  Blonde directory not found, creating')
-    #     os.makedirs(BLONDE)
-    # else:
-    #     print(Fore.GREEN + '::' + Style.RESET_ALL + ' Blonde directory found')
-
-    # if(not path.isdir(BEETLE)):
-    #     print(Fore.RED + '::' + Style.RESET_ALL + '  Beetle Bailey directory not found, creating')
-    #     os.makedirs(BEETLE)
-    # else:
-    #     print(Fore.GREEN + '::' + Style.RESET_ALL + ' Beetle Bailey directory found')
-
-
-
-
 # return soup object from url
 def scrape(url):
     try:
@@ -161,29 +140,7 @@ def ping():
     else:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Wifi connection found!')
 
-
-# Get Beetle Bailey
-# def get_beetle():
-#     print('==> Downloading website')
-#     soup = scrape('https://www.comicskingdom.com/beetle-bailey-1')
-#     test = soup.find('div', attrs={'class': 'cv-img'})
-#     print('==> Finding image url')
-#     regex = re.compile(R'https://.*\=\=')
-#     img_url = regex.search(str(test))
-#     x = datetime.datetime.now()
-#     print('==> Downloading image')
-#     result = os.system('curl -m 10 -# ' + img_url.group() + ' > ' + BEETLE + '/' + str(x.month) + '-' + str(x.day) + '-' + str(x.year) + '.gif')
-#     if result == 0:
-#         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Comic downloaded!')
-#     else:
-#         print(Fore.RED + '::' + Style.RESET_ALL + ' Error encountered. Comic not downloaded.')
-#         exit(1)
-
-# # Get Blonde function
-# def get_blonde():
-#     print('stuff')
-
-# # Get XKCD function
+# Get XKCD function
 def get_xkcd():
     print('==> Downloading website')
     soup = scrape('https://www.xkcd.com')
@@ -270,7 +227,7 @@ def get_bc():
 
 # CLI comic names list
 def list_give():
-    print('Options are:\nDilbert\nGarfield\nFarSide\nXKCD\nBC\nBeetle\nBlonde')
+    print('Options are:\n\tDilbert\n\tGarfield\n\tFarSide\n\tXKCD\n\tBC\n')
 
 # CLI interface comic getting thing
 def cli_get(test):
@@ -302,15 +259,16 @@ def main():
     my_parser = argparse.ArgumentParser()
     my_parser.version = '1.0'
     my_parser.add_argument('-q', '--quiet', action='store_true', help='Turn off welcome banner') # argument for quiet connection
-    my_parser.add_argument('-c', '--check', action='store_true', help='Turn off automatic directory checks (may cause errors)') # argument to disregard directory checks
     my_parser.add_argument('-d', '--download', type=str, help='Download a comic without the fancy GUI. Implies -q', nargs='+')
     my_parser.add_argument('-v', '--version', action='version', help='show version')
     my_parser.add_argument('-l', '--list', action='store_true', help='list CLI args for --download')
     args = my_parser.parse_args()
 
+    # simple handler for the -l option.
     if args.list == True:
         list_give()
         exit()
+
     # Do CLI download check
     if args.download != None:
         cli_get(args.download)
@@ -324,18 +282,13 @@ def main():
         print(f.renderText('Download Comics'))
 
     # Runs prompt code to get comics to download
-    try:
-        answers = prompt(questions, style=style)
-    except ValueError:
-        exit()
-
+    answers = prompt(questions, style=style)
 
     # Start ping process now
     pi.start()
 
     # Do directory check
-    if not args.check: # allow for lack of directory check
-        check_files()
+    check_files()
 
     # check for internet thread joins
     pi.join()
@@ -345,6 +298,7 @@ def main():
         parse_list(answers['Comics'])
     except KeyboardInterrupt:
         print('==> Aborting')
+        exit()
 
 
 if __name__ == '__main__':

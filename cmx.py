@@ -131,7 +131,16 @@ def ping(pid):
     result = os.system('ping -c 1 archlinux.org >/dev/null 2>&1')
     if result != 0:
         print(Fore.RED + '::' + Style.RESET_ALL + ' No wifi connection found.')
-        os.system('kill ' + str(pid) + ' >/dev/null 2>&1')
+        os.system('kill ' + str(pid) + ' >/dev/null 2>&1') # I really hate this, but it's the only way at the moment.
+                                                           # Ideally, it would raise an exception, but I can't catch it in man
+                                                           # So, instead, I pass the PID of the main process to it
+                                                           # When there is an error, it kills the main thread
+                                                           # and then exits itself anyway.
+                                                           # Sorry for the long explanation, but this pice of code is
+                                                           # so crappy that I wanted to explain it. At least it's not
+                                                           # a security hole.
+                                                           #
+                                                           # TODO: Find a better way to do this
         exit()
     else:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Wifi connection found!')

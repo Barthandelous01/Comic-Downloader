@@ -150,7 +150,7 @@ def get_url(regex, soup):
 # download comic function
 def curl_comic(url, directory, extention):
     x = datetime.datetime.now()
-    result = os.system('curl -m 10 -# ' + url + ' > ' + directory + '/' +  str(x.month) + '-' + str(x.day) + '-' + str(x.year) + extention + ' 2>/dev/null')
+    result = os.system('curl -# -m 10 ' + url + ' > ' + directory + '/' +  str(x.month) + '-' + str(x.day) + '-' + str(x.year) + extention)
     if result == 0:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Comic downloaded!')
     else:

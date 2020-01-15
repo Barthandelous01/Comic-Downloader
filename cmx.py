@@ -83,11 +83,6 @@ def parse_list(list):
             get_far_side()
         elif x == 'BC':
             get_bc()
-        # elif x == 'Beetle Bailey':
-        #     get_beetle()
-        # elif x == 'Blonde':
-        #     get_blonde()
-
 
 # Directory function check
 def check_files():
@@ -243,8 +238,6 @@ def cli_get(test):
             get_xkcd()
         elif x == 'BC':
             get_bc()
-        # elif x == 'Beetle':
-        #     get_beetle()
         elif x == 'h' | 'help':
             print('Options are: Dilbert, Garfield, FarSide, XKCD, BC')
         else:
@@ -257,7 +250,7 @@ def main():
 
     # Initialize command line args
     my_parser = argparse.ArgumentParser()
-    my_parser.version = '1.0'
+    my_parser.version = '1.1'
     my_parser.add_argument('-q', '--quiet', action='store_true', help='Turn off welcome banner') # argument for quiet connection
     my_parser.add_argument('-d', '--download', type=str, help='Download a comic without the fancy GUI. Implies -q', nargs='+')
     my_parser.add_argument('-v', '--version', action='version', help='show version')

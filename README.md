@@ -9,17 +9,14 @@ This project uses _a lot_ of prerequisites to manage all of the amazing stuff th
 ```
 $ sudo pip3 install pyfiglet urllib3 PyInquirer bs4 colorama
 ```
-Then, download the install script and run it:
-```
-$ sh install.sh
-```
+Then, download the script and put it in the directory you want.
 Congrats! The application should be installed.
 ## Usage
-This is one area you have to be careful. Because of limitations imposed by `python`, there is no way to use an absolute path with this script. Therefore: __LEAVE IT IN THE SAME DIRECTORY!__ The install does not add it to `/usr/bin`, but leaves it in the home directory. __ALWAYS RUN IT FROM HERE!__
+This is one area you have to be careful. Because of limitations imposed by `python`, there is no way to use an absolute path with this script. Therefore: __LEAVE IT IN THE SAME DIRECTORY!__ The install does not add it to `/usr/bin`, but leaves it in the home directory, or wherever else you put it. __ALWAYS RUN IT FROM HERE!__
 
 To run:
 ```
-$ cd ~
+$ cd /path/to/cmx.py
 $ ./cmx.py
 ```
 The `-h` option will show all options.

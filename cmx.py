@@ -154,7 +154,7 @@ def scrape(url):
 
 # Network test function
 def ping():
-    result = os.system('ping -c 3 archlinux.org >/dev/null')
+    result = os.system('ping -c 1 archlinux.org >/dev/null 2>&1')
     if result != 0:
         print(Fore.RED + '::' + Style.RESET_ALL + ' No wifi connection. Aborting.')
         exit()
@@ -317,7 +317,6 @@ def main():
 
     # Non-thread bound ping. Increases speed!
     pi = threading.Thread(target=ping)
-    pi.start()
 
     # Render welcome banner
     if not args.quiet: # check for silent option
@@ -329,11 +328,10 @@ def main():
         answers = prompt(questions, style=style)
     except ValueError:
         exit()
-    try:
-        list = answers['Comics']
-    except:
-        print('You need to select at least one comic')
-        exit()
+
+
+    # Start ping process now
+    pi.start()
 
     # Do directory check
     if not args.check: # allow for lack of directory check
@@ -344,7 +342,7 @@ def main():
 
     # Run actual download code
     try:
-        parse_list(list)
+        parse_list(answers['Comics'])
     except KeyboardInterrupt:
         print('==> Aborting')
 

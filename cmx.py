@@ -127,10 +127,11 @@ def scrape(url):
         exit(1)
 
 # Network test function
-def ping():
+def ping(pid):
     result = os.system('ping -c 1 archlinux.org >/dev/null 2>&1')
     if result != 0:
-        print(Fore.RED + '::' + Style.RESET_ALL + ' No wifi connection. Aborting.')
+        print(Fore.RED + '::' + Style.RESET_ALL + ' No wifi connection found.')
+        os.system('kill ' + str(pid) + ' >/dev/null 2>&1')
         exit()
     else:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Wifi connection found!')
@@ -267,7 +268,7 @@ def main():
         cli_get(args.download)
 
     # Non-thread bound ping. Increases speed!
-    pi = threading.Thread(target=ping)
+    pi = threading.Thread(target=ping, args=(os.getpid(),))
 
     # Render welcome banner
     if not args.quiet: # check for silent option
@@ -279,7 +280,6 @@ def main():
 
     # Start ping process now
     pi.start()
-
     # Do directory check
     check_files()
 

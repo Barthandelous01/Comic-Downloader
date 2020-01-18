@@ -70,7 +70,10 @@ questions = [
             },
             {
                 'name': 'BC'
-             }
+            },
+            {
+                 'name': 'Blonde'
+            }
          ]
     }
 ]
@@ -92,6 +95,8 @@ def parse_list(list):
             get_far_side()
         elif x == 'BC':
             get_bc()
+        elif x == 'Blonde':
+            get_blonde()
 
 # file check function
 def check_dir(directory, name):
@@ -111,6 +116,7 @@ def check_files():
     check_dir(GARFIELD, 'Garfield')
     check_dir(BC, 'BC')
     check_dir(FAR_SIDE, 'Far Side')
+    check_dir(BLONDE, 'Blonde')
 
 # Network test function
 def ping(pid):
@@ -146,14 +152,14 @@ def scrape(url):
         exit(1)
 
 # find comic function
-def get_url(regex, soup):
-    regex = re.compile(regex)
+def get_url(reg, soup):
+    regex = re.compile(reg)
     return regex.search(str(soup))
 
 # download comic function
 def curl_comic(url, directory, extention):
     x = datetime.datetime.now()
-    result = os.system('curl -# -m 10 ' + url + ' > ' + directory + '/' +  str(x.month) + '-' + str(x.day) + '-' + str(x.year) + extention)
+    result = os.system('curl -# -m 10 ' + '\'' + url + '\'' + ' > ' + directory + '/' +  str(x.month) + '-' + str(x.day) + '-' + str(x.year) + extention)
     if result == 0:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Comic downloaded!')
     else:
@@ -215,6 +221,18 @@ def get_bc():
     total = 'https://johnhartstudios.com/' + img_url.group()
     curl_comic(total, BC, '.jpg')
 
+def get_blonde():
+    print('==> Downloading website')
+    soup = scrape('https://www.comicskingdom.com/blondie')
+    total = soup.find('div', attrs={'id':'comic-slider'})
+    print('==> Finding image url')
+    img_url = get_url(R'https://.*;file=[a-zA-Z0-9]*=', total)
+    img = re.sub(R'\&amp;', '&', img_url.group()) # this is not normal, but needed for the php of this site
+    print('==> Downloading image')
+    curl_comic(img, BLONDE, '.gif')
+
+
+
 
 #########################
 # CLI COMMAND FUNCTIONS #
@@ -222,7 +240,7 @@ def get_bc():
 
 # CLI comic names list
 def list_give():
-    print('Options are:\n\tDilbert\n\tGarfield\n\tFarSide\n\tXKCD\n\tBC\n')
+    print('Options are:\n\tDilbert\n\tGarfield\n\tFarSide\n\tXKCD\n\tBC\nBlonde\n')
 
 # CLI interface comic getting thing
 def cli_get(test):
@@ -241,8 +259,8 @@ def cli_get(test):
             get_xkcd()
         elif x == 'BC':
             get_bc()
-        elif x == 'h' | 'help':
-            print('Options are: Dilbert, Garfield, FarSide, XKCD, BC')
+        elif x == 'Blonde':
+            get_blonde()
         else:
             print(Fore.RED + '::' + Style.RESET_ALL + ' Comic not known: ' + str(x))
     exit()
@@ -253,7 +271,7 @@ def main():
 
     # Initialize command line args
     my_parser = argparse.ArgumentParser()
-    my_parser.version = '1.1'
+    my_parser.version = '1.2'
     my_parser.add_argument('-q', '--quiet', action='store_true', help='Turn off welcome banner') # argument for quiet connection
     my_parser.add_argument('-d', '--download', type=str, help='Download a comic without the fancy GUI. Implies -q', nargs='+')
     my_parser.add_argument('-v', '--version', action='version', help='show version')

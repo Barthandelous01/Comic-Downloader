@@ -103,6 +103,9 @@ def check_dir(directory, name):
 
 # Directory function check
 def check_files():
+    a = [XKCD, DILBERT, GARFIELD, BC, FAR_SIDE]
+    b = ['XKCD', 'Dilbert', 'Garfield', 'BC', 'Far Side']
+
     check_dir(XKCD, 'XKCD')
     check_dir(DILBERT, 'Dilbert')
     check_dir(GARFIELD, 'Garfield')

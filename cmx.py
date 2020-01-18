@@ -149,14 +149,14 @@ def scrape(url):
         exit(1)
 
 # find comic function
-def get_url(regex, soup):
-    regex = re.compile(regex)
+def get_url(reg, soup):
+    regex = re.compile(reg)
     return regex.search(str(soup))
 
 # download comic function
 def curl_comic(url, directory, extention):
     x = datetime.datetime.now()
-    result = os.system('curl -# -m 10 ' + url + ' > ' + directory + '/' +  str(x.month) + '-' + str(x.day) + '-' + str(x.year) + extention)
+    result = os.system('curl -# -m 10 ' + '\'' + url + '\'' + ' > ' + directory + '/' +  str(x.month) + '-' + str(x.day) + '-' + str(x.year) + extention)
     if result == 0:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Comic downloaded!')
     else:
@@ -219,7 +219,16 @@ def get_bc():
     curl_comic(total, BC, '.jpg')
 
 def get_blonde():
-    prtin('stuff')
+    print('==> Downloading website')
+    soup = scrape('https://www.comicskingdom.com/blondie')
+    total = soup.find('div', attrs={'id':'comic-slider'})
+    print('==> Finding image url')
+    img_url = get_url(R'https://.*;file=[a-zA-Z0-9]*=', total)
+    img = re.sub(R'\&amp;', '&', img_url.group()) # this is not normal, but needed for the php of this site
+    print('==> Downloading image')
+    curl_comic(img, BLONDE, '.gif')
+
+
 
 
 #########################

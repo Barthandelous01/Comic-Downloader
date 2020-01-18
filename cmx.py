@@ -108,15 +108,10 @@ def check_dir(directory, name):
 
 # Directory function check
 def check_files():
-    a = [XKCD, DILBERT, GARFIELD, BC, FAR_SIDE]
-    b = ['XKCD', 'Dilbert', 'Garfield', 'BC', 'Far Side']
-
-    check_dir(XKCD, 'XKCD')
-    check_dir(DILBERT, 'Dilbert')
-    check_dir(GARFIELD, 'Garfield')
-    check_dir(BC, 'BC')
-    check_dir(FAR_SIDE, 'Far Side')
-    check_dir(BLONDE, 'Blonde')
+    a = [XKCD, DILBERT, GARFIELD, BC, FAR_SIDE, BLONDE]
+    b = ['XKCD', 'Dilbert', 'Garfield', 'BC', 'Far Side', 'Blondie']
+    for x in range(6):
+        check_dir(a[x], b[x])
 
 # Network test function
 def ping(pid):

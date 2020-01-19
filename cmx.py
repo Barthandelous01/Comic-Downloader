@@ -73,6 +73,9 @@ questions = [
             },
             {
                  'name': 'Blonde'
+            },
+            {
+                'name': 'Beetle Bailey'
             }
          ]
     }
@@ -97,6 +100,8 @@ def parse_list(list):
             get_bc()
         elif x == 'Blonde':
             get_blonde()
+        elif x == 'Beetle Bailey':
+            get_beetle()
 
 # file check function
 def check_dir(directory, name):
@@ -108,9 +113,9 @@ def check_dir(directory, name):
 
 # Directory function check
 def check_files():
-    a = [XKCD, DILBERT, GARFIELD, BC, FAR_SIDE, BLONDE]
-    b = ['XKCD', 'Dilbert', 'Garfield', 'BC', 'Far Side', 'Blondie']
-    for x in range(6):
+    a = [XKCD, DILBERT, GARFIELD, BC, FAR_SIDE, BLONDE, BEETLE]
+    b = ['XKCD', 'Dilbert', 'Garfield', 'BC', 'Far Side', 'Blondie', 'Beetle Bailey']
+    for x in range(7):
         check_dir(a[x], b[x])
 
 # Network test function
@@ -226,8 +231,8 @@ def get_blonde():
     print('==> Downloading image')
     curl_comic(img, BLONDE, '.gif')
 
-
-
+def get_beetle():
+    print('stuff')
 
 #########################
 # CLI COMMAND FUNCTIONS #
@@ -235,7 +240,7 @@ def get_blonde():
 
 # CLI comic names list
 def list_give():
-    print('Options are:\n\tDilbert\n\tGarfield\n\tFarSide\n\tXKCD\n\tBC\nBlonde\n')
+    print('Options are:\n\tDilbert\n\tGarfield\n\tFarSide\n\tXKCD\n\tBC\n\tBlonde\n\tBeetleBailey')
 
 # CLI interface comic getting thing
 def cli_get(test):
@@ -256,6 +261,8 @@ def cli_get(test):
             get_bc()
         elif x == 'Blonde':
             get_blonde()
+        elif x == 'BeetleBailey':
+            get_beetle()
         else:
             print(Fore.RED + '::' + Style.RESET_ALL + ' Comic not known: ' + str(x))
     exit()

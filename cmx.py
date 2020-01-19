@@ -233,25 +233,9 @@ def get_comic_kingdom(comic_name, directory, extention):
     curl_comic(img, directory, extention)
 
 def get_blonde():
-    # print('==> Downloading website')
-    # soup = scrape('https://www.comicskingdom.com/blondie')
-    # total = soup.find('div', attrs={'id':'comic-slider'})
-    # print('==> Finding image url')
-    # img_url = get_url(R'https://.*;file=[a-zA-Z0-9]*=', total)
-    # img = re.sub(R'\&amp;', '&', img_url.group()) # this is not normal, but needed for the php of this site
-    # print('==> Downloading image')
-    # curl_comic(img, BLONDE, '.gif')
     get_comic_kingdom('blondie', BLONDE, '.gif')
 
 def get_beetle():
-    # print('==> Downloading website')
-    # soup = scrape('https://www.comicskingdom.com/beetle-bailey-1')
-    # total = soup.find('div', attrs={'id':'comic-slider'})
-    # print('==> Finding image url')
-    # img_url = get_url(R'https://.*;file=[a-zA-Z0-9]*=', total)
-    # img = re.sub(R'\&amp;', '&', img_url.group())
-    # print('==> Downloading image')
-    # curl_comic(img, BEETLE, '.gif')
     get_comic_kingdom('beetle-bailey-1', BEETLE, '.gif')
 
 #########################

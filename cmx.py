@@ -31,6 +31,7 @@ GARFIELD=DIRECTORY + '/garfield'
 BC=DIRECTORY + '/bc'
 BLONDE=DIRECTORY + '/blonde'
 BEETLE=DIRECTORY + '/beetle'
+CIRCUS=DIRECTORY + '/circus'
 
 ################
 # PROMPT DICTS #
@@ -76,6 +77,9 @@ questions = [
             },
             {
                 'name': 'Beetle Bailey'
+            },
+            {
+                'name': 'Family Circus'
             }
          ]
     }
@@ -102,6 +106,8 @@ def parse_list(list):
             get_blonde()
         elif x == 'Beetle Bailey':
             get_beetle()
+        elif x == 'Family Circus':
+            get_circus()
 
 # file check function
 def check_dir(directory, name):
@@ -113,9 +119,9 @@ def check_dir(directory, name):
 
 # Directory function check
 def check_files():
-    a = [XKCD, DILBERT, GARFIELD, BC, FAR_SIDE, BLONDE, BEETLE]
-    b = ['XKCD', 'Dilbert', 'Garfield', 'BC', 'Far Side', 'Blondie', 'Beetle Bailey']
-    for x in range(7):
+    a = [XKCD, DILBERT, GARFIELD, BC, FAR_SIDE, BLONDE, BEETLE, CIRCUS]
+    b = ['XKCD', 'Dilbert', 'Garfield', 'BC', 'Far Side', 'Blondie', 'Beetle Bailey', 'Family Circus']
+    for x in range(8):
         check_dir(a[x], b[x])
 
 # Network test function
@@ -238,13 +244,16 @@ def get_blonde():
 def get_beetle():
     get_comic_kingdom('beetle-bailey-1', BEETLE, '.gif')
 
+def get_circus():
+    get_comic_kingdom('family-circus', CIRCUS, '.gif')
+
 #########################
 # CLI COMMAND FUNCTIONS #
 #########################
 
 # CLI comic names list
 def list_give():
-    print('Options are:\n\tDilbert\n\tGarfield\n\tFarSide\n\tXKCD\n\tBC\n\tBlondie\n\tBeetleBailey')
+    print('Options are:\n\tDilbert\n\tGarfield\n\tFarSide\n\tXKCD\n\tBC\n\tBlondie\n\tBeetleBailey\n\tFamilyCircus')
 
 # CLI interface comic getting thing
 def cli_get(test):
@@ -267,6 +276,8 @@ def cli_get(test):
             get_blonde()
         elif x == 'BeetleBailey':
             get_beetle()
+        elif x == 'FamilyCircus':
+            get_circus()
         else:
             print(Fore.RED + '::' + Style.RESET_ALL + ' Comic not known: ' + str(x))
     exit()

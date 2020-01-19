@@ -72,7 +72,7 @@ questions = [
                 'name': 'BC'
             },
             {
-                 'name': 'Blonde'
+                 'name': 'Blondie'
             },
             {
                 'name': 'Beetle Bailey'
@@ -98,7 +98,7 @@ def parse_list(list):
             get_far_side()
         elif x == 'BC':
             get_bc()
-        elif x == 'Blonde':
+        elif x == 'Blondie':
             get_blonde()
         elif x == 'Beetle Bailey':
             get_beetle()
@@ -244,7 +244,7 @@ def get_beetle():
 
 # CLI comic names list
 def list_give():
-    print('Options are:\n\tDilbert\n\tGarfield\n\tFarSide\n\tXKCD\n\tBC\n\tBlonde\n\tBeetleBailey')
+    print('Options are:\n\tDilbert\n\tGarfield\n\tFarSide\n\tXKCD\n\tBC\n\tBlondie\n\tBeetleBailey')
 
 # CLI interface comic getting thing
 def cli_get(test):
@@ -263,7 +263,7 @@ def cli_get(test):
             get_xkcd()
         elif x == 'BC':
             get_bc()
-        elif x == 'Blonde':
+        elif x == 'Blondie':
             get_blonde()
         elif x == 'BeetleBailey':
             get_beetle()

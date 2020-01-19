@@ -232,7 +232,14 @@ def get_blonde():
     curl_comic(img, BLONDE, '.gif')
 
 def get_beetle():
-    print('stuff')
+    print('==> Downloading website')
+    soup = scrape('https://www.comicskingdom.com/beetle-bailey-1')
+    total = soup.find('div', attrs={'id':'comic-slider'})
+    print('==> Finding image url')
+    img_url = get_url(R'https://.*;file=[a-zA-Z0-9]*=', total)
+    img = re.sub(R'\&amp;', '&', img_url.group())
+    print('==> Downloading image')
+    curl_comic(img, BEETLE, '.gif')
 
 #########################
 # CLI COMMAND FUNCTIONS #

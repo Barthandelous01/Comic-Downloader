@@ -233,7 +233,7 @@ def get_comic_kingdom(comic_name, directory, extention):
     soup = scrape('https://www.comicskingdom.com/' + comic_name)
     total = soup.find('div', attrs={'id':'comic-slider'})
     print('==> Finding image url')
-    img_url = get_url(R'https://.*;file=[a-zA-Z0-9]*=', total)
+    img_url = get_url(R'https://.*;file=[a-zA-Z0-9]*=?', total)
     img = re.sub(R'\&amp;', '&', img_url.group())
     print('==> Downloading image')
     curl_comic(img, directory, extention)

@@ -85,6 +85,36 @@ questions = [
     }
 ]
 
+# List of options for the main menu
+quests = [
+    {
+        'type': 'checkbox',
+        'message': 'Please choose your action.',
+        'name': 'Options',
+        'choices': [
+            {
+                'name': '= Display Comics ='
+            },
+            {
+                'name': '= Remove old comics ='
+            },
+            {
+                'name': '= Get comics ='
+            }
+        ]
+    }
+]
+
+coms = {
+    'Dilbert': DILBERT,
+    'Garfield': GARFIELD,
+    'The Far Side': FAR_SIDE,
+    'XKCD': XKCD,
+    'Blondie': BLONDE,
+    'Beetle Bailey': BEETLE,
+    'BC': BC,
+    'Family Circus': CIRCUS
+}
 ##################
 # MAIN FUNCTIONS #
 ##################
@@ -119,10 +149,8 @@ def check_dir(directory, name):
 
 # Directory function check
 def check_files():
-    a = [XKCD, DILBERT, GARFIELD, BC, FAR_SIDE, BLONDE, BEETLE, CIRCUS]
-    b = ['XKCD', 'Dilbert', 'Garfield', 'BC', 'Far Side', 'Blondie', 'Beetle Bailey', 'Family Circus']
-    for x in range(8):
-        check_dir(a[x], b[x])
+    for x in coms:
+        check_dir(x, coms[x])
 
 # Network test function
 def ping(pid):
@@ -257,10 +285,14 @@ def list_give():
 
 # CLI interface comic getting thing
 def cli_get(test):
+    # Non thread-bound ping. Increases speed!
     pi = threading.Thread(target=ping, args=(os.getpid(),))
+    # Start ping
     pi.start()
+    # Quick conncurrent directory check and wifi check finish
     check_files()
     pi.join()
+    # Iterate over all options and download them
     for x in test:
         if x == 'Dilbert':
             get_dilbert()
@@ -282,28 +314,7 @@ def cli_get(test):
             print(Fore.RED + '::' + Style.RESET_ALL + ' Comic not known: ' + str(x))
     exit()
 
-def main():
-    # Initialize colors
-    init()
-
-    # Initialize command line args
-    my_parser = argparse.ArgumentParser()
-    my_parser.version = '1.3'
-    my_parser.add_argument('-q', '--quiet', action='store_true', help='Turn off welcome banner') # argument for quiet connection
-    my_parser.add_argument('-d', '--download', type=str, help='Download a comic without the fancy GUI. Implies -q', nargs='+')
-    my_parser.add_argument('-v', '--version', action='version', help='show version')
-    my_parser.add_argument('-l', '--list', action='store_true', help='list CLI args for --download')
-    args = my_parser.parse_args()
-
-    # simple handler for the -l option.
-    if args.list == True:
-        list_give()
-        exit()
-
-    # Do CLI download check
-    if args.download != None:
-        cli_get(args.download)
-
+def term_download():
     # Non-thread bound ping. Increases speed!
     pi = threading.Thread(target=ping, args=(os.getpid(),))
 
@@ -330,6 +341,31 @@ def main():
     except KeyboardInterrupt:
         print('==> Aborting')
         exit()
+
+
+def main():
+    # Initialize colors
+    init()
+
+    # Initialize command line args
+    my_parser = argparse.ArgumentParser()
+    my_parser.version = '1.3'
+    my_parser.add_argument('-q', '--quiet', action='store_true', help='Turn off welcome banner') # argument for quiet connection
+    my_parser.add_argument('-d', '--download', type=str, help='Download a comic without the fancy GUI. Implies -q', nargs='+')
+    my_parser.add_argument('-v', '--version', action='version', help='show version')
+    my_parser.add_argument('-l', '--list', action='store_true', help='list CLI args for --download')
+    args = my_parser.parse_args()
+
+    # simple handler for the -l option.
+    if args.list == True:
+        list_give()
+        exit()
+
+    # Do CLI download check
+    if args.download != None:
+        cli_get(args.download)
+
+    term_download()
 
 
 if __name__ == '__main__':

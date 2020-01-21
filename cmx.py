@@ -2,7 +2,6 @@
 from __future__ import print_function, unicode_literals
 from PyInquirer import style_from_dict, Token, prompt, Separator
 import urllib3
-import os.path
 import os
 from colorama import init, Fore, Style
 from bs4 import BeautifulSoup
@@ -215,7 +214,7 @@ def check_dir(directory, name):
     """
     Checks the individual functions
     """
-    if(not path.isdir(directory)):
+    if(not os.path.isdir(directory)):
         print(Fore.RED + '::' + Style.RESET_ALL + ' ' + name + ' directory not found, creating')
         os.makedirs(directory)
     else:

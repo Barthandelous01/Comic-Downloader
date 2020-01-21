@@ -6,8 +6,8 @@ This is a full-featured python downloader CLI application to download your webco
 
 ## Installation
 This project uses _a lot_ of prerequisites to manage all of the amazing stuff that it does. Install:
-```
-$ sudo pip3 install pyfiglet urllib3 PyInquirer bs4 colorama
+```sh
+sudo pip3 install pyfiglet urllib3 PyInquirer bs4 colorama
 ```
 Then, download the script and put it in the directory you want.
 Congrats! The application should be installed.
@@ -16,8 +16,8 @@ This is one area you have to be careful. Because of limitations imposed by `pyth
 
 To run:
 ```sh
-$ cd /path/to/cmx.py
-$ ./cmx.py
+cd /path/to/cmx.py
+./cmx.py
 ```
 The `-h` option will show all options.
 

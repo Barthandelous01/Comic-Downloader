@@ -93,13 +93,13 @@ quests = [
         'name': 'Options',
         'choices': [
             {
+                'name': '= Get comics ='
+            },
+            {
                 'name': '= Display Comics ='
             },
             {
                 'name': '= Remove old comics ='
-            },
-            {
-                'name': '= Get comics ='
             }
         ]
     }
@@ -314,14 +314,26 @@ def cli_get(test):
             print(Fore.RED + '::' + Style.RESET_ALL + ' Comic not known: ' + str(x))
     exit()
 
-def term_download(args):
-    # Non-thread bound ping. Increases speed!
-    pi = threading.Thread(target=ping, args=(os.getpid(),))
+##################
+# MAIN FUNCTIONS #
+##################
 
+def banner(args):
     # Render welcome banner
     if not args.quiet: # check for silent option
         f = Figlet(font='speed')
         print(f.renderText('Download Comics'))
+
+def rem_old():
+    print('stuff')
+
+def display_comics():
+    print('stuff')
+
+def term_download(args):
+    # Non-thread bound ping. Increases speed!
+    pi = threading.Thread(target=ping, args=(os.getpid(),))
+
 
     # Runs prompt code to get comics to download
     answers = prompt(questions, style=style)
@@ -342,11 +354,11 @@ def term_download(args):
         print('==> Aborting')
         exit()
 
+########
+# MAIN #
+########
 
 def main():
-    # Initialize colors
-    init()
-
     # Initialize command line args
     my_parser = argparse.ArgumentParser()
     my_parser.version = '1.3'
@@ -355,6 +367,9 @@ def main():
     my_parser.add_argument('-v', '--version', action='version', help='show version')
     my_parser.add_argument('-l', '--list', action='store_true', help='list CLI args for --download')
     args = my_parser.parse_args()
+
+    # Initialize colors
+    init()
 
     # simple handler for the -l option.
     if args.list == True:
@@ -365,8 +380,25 @@ def main():
     if args.download != None:
         cli_get(args.download)
 
-    term_download(args)
+    # render banner
+    banner(args)
 
+    # Do main menu choice
+    ans = prompt(quests, style=style)
+
+    # Iterate over all available menu options
+    for pos in ans:
+        if pos == '= Get comics =':
+            term_download(args)
+        elif pos == '= Display comics =':
+            display_comics()
+            exit()
+        elif pos == '= Remove comics =':
+            rem_old()
+            exit()
+
+    # Run the menu for the main in case no args are selected
+    term_download(args)
 
 if __name__ == '__main__':
     main()

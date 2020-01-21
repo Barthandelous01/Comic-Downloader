@@ -277,7 +277,7 @@ def main():
 
     # Initialize command line args
     my_parser = argparse.ArgumentParser()
-    my_parser.version = '1.2'
+    my_parser.version = '1.4'
     my_parser.add_argument('-q', '--quiet', action='store_true', help='Turn off welcome banner') # argument for quiet connection
     my_parser.add_argument('-d', '--download', type=str, help='Download a comic without the fancy GUI. Implies -q', nargs='+')
     my_parser.add_argument('-v', '--version', action='version', help='show version')

@@ -261,7 +261,7 @@ def scrape(url):
         http = urllib3.PoolManager()
         html = http.request('GET', url)
         return BeautifulSoup(html.data, 'html.parser')
-    except:
+    except: # catch *all* errors
         print(Fore.RED + '::' + Style.RESET_ALL + ' An error occured. Aborting.')
         exit(1)
 

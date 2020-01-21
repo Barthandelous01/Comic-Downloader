@@ -150,7 +150,7 @@ def check_dir(directory, name):
 # Directory function check
 def check_files():
     for x in coms:
-        check_dir(x, coms[x])
+        check_dir(coms[x], x)
 
 # Network test function
 def ping(pid):
@@ -314,7 +314,7 @@ def cli_get(test):
             print(Fore.RED + '::' + Style.RESET_ALL + ' Comic not known: ' + str(x))
     exit()
 
-def term_download():
+def term_download(args):
     # Non-thread bound ping. Increases speed!
     pi = threading.Thread(target=ping, args=(os.getpid(),))
 
@@ -365,7 +365,7 @@ def main():
     if args.download != None:
         cli_get(args.download)
 
-    term_download()
+    term_download(args)
 
 
 if __name__ == '__main__':

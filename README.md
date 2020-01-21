@@ -11,6 +11,8 @@ sudo pip3 install pyfiglet urllib3 PyInquirer bs4 colorama
 ```
 Then, download the script and put it in the directory you want.
 Congrats! The application should be installed.
+
+If you (for whatever reason) want the current up-to-date piece of spaghetti code that will later be rebased into the core code for master, the branch `develop` is for you! Please, please, please don't clone onto hotfix; it would be very bad. You would only get updates when I needed to hotfix something, and that doesn't happen often.
 ## Usage
 This is one area you have to be careful. Because of limitations imposed by `python`, there is no way to use an absolute path with this script. Therefore: __LEAVE IT IN THE SAME DIRECTORY!__ The install does not add it to `/usr/bin`, but leaves it in the home directory, or wherever else you put it. __ALWAYS RUN IT FROM HERE!__
 

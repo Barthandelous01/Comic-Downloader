@@ -184,7 +184,6 @@ def term_download(args):
         print('==> Aborting')
         exit()
 
-
 # List parsing from the list from the prompt. Runs the get_.*() function for each comic.
 def parse_list(list_arg):
     """

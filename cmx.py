@@ -11,9 +11,11 @@ from bs4 import BeautifulSoup
 from pyfiglet import Figlet
 import re
 import datetime
+import Image
 import argparse
 import sys
 import threading
+from IPython.display import display, Image
 
 
 ###############
@@ -118,6 +120,53 @@ coms = {
 ##################
 # MAIN FUNCTIONS #
 ##################
+
+def banner(args):
+    # Render welcome banner
+    if not args.quiet: # check for silent option
+        f = Figlet(font='speed')
+        print(f.renderText('Download Comics'))
+
+def rem_old():
+    print('stuff')
+
+def get_date():
+    x = datetime.datetime.now()
+    date = str(x.month) + '-' + str(x.day) + '-' + str(x.day)
+    return date
+
+
+def display_comics(comic):
+    today = get_date()
+    dirs = os.popen('ls ' + str(comic)).read()
+    regex = re.compile(R'\d{1,2}-\d{1,2}-\d{4}\.(jpg|gif|png)')
+    name = regex.search(dirs)
+    wb.open(comic + '/' + name.group())
+    print('==> Comic opened!')
+
+def term_download(args):
+    # Non-thread bound ping. Increases speed!
+    pi = threading.Thread(target=ping, args=(os.getpid(),))
+
+  # Runs prompt code to get comics to download
+    answers = prompt(questions, style=style)
+
+    # Start ping process now
+    pi.start()
+
+    # Do directory check
+    check_files()
+
+    # check for internet thread joins
+    pi.join()
+
+    # Run actual download code
+    try:
+        parse_list(answers['Comics'])
+    except KeyboardInterrupt:
+        print('==> Aborting')
+        exit()
+
 
 # List parsing from the list from the prompt. Runs the get_.*() function for each comic.
 def parse_list(list):
@@ -314,46 +363,6 @@ def cli_get(test):
             print(Fore.RED + '::' + Style.RESET_ALL + ' Comic not known: ' + str(x))
     exit()
 
-##################
-# MAIN FUNCTIONS #
-##################
-
-def banner(args):
-    # Render welcome banner
-    if not args.quiet: # check for silent option
-        f = Figlet(font='speed')
-        print(f.renderText('Download Comics'))
-
-def rem_old():
-    print('stuff')
-
-def display_comics():
-    print('stuff')
-
-def term_download(args):
-    # Non-thread bound ping. Increases speed!
-    pi = threading.Thread(target=ping, args=(os.getpid(),))
-
-
-    # Runs prompt code to get comics to download
-    answers = prompt(questions, style=style)
-
-    # Start ping process now
-    pi.start()
-
-    # Do directory check
-    check_files()
-
-    # check for internet thread joins
-    pi.join()
-
-    # Run actual download code
-    try:
-        parse_list(answers['Comics'])
-    except KeyboardInterrupt:
-        print('==> Aborting')
-        exit()
-
 ########
 # MAIN #
 ########
@@ -387,18 +396,17 @@ def main():
     ans = prompt(quests, style=style)
 
     # Iterate over all available menu options
-    for pos in ans:
+    print(ans)
+    for pos in ans['Options']:
         if pos == '= Get comics =':
             term_download(args)
-        elif pos == '= Display comics =':
-            display_comics()
+        elif pos == '= Display Comics =':
+            display_comics(BEETLE)
             exit()
         elif pos == '= Remove comics =':
             rem_old()
             exit()
 
-    # Run the menu for the main in case no args are selected
-    term_download(args)
 
 if __name__ == '__main__':
     main()

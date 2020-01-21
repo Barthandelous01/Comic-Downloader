@@ -125,12 +125,13 @@ def banner(args):
         f = Figlet(font='speed')
         print(f.renderText('Download Comics'))
 
-def rem_old():
+def rem_old(list_arg):
     """
     Removes old comics (ones that aren't todays)
     Helps users save disk space.
     """
-    print('stuff')
+    for x in list_arg:
+        os.system('rm ' + coms[x] + '/*')
 
 def get_date():
     """
@@ -155,7 +156,7 @@ def display_comics(comic):
     regex = re.compile(R'\d{1,2}-\d{1,2}-\d{4}\.(jpg|gif|png)')
     name = regex.search(dirs)
     wb.open(os.getcwd() + '/' + comic + '/' + name.group())
-    print(os.getcwd() + '/' + comic + '/' + name.group())
+    # print(os.getcwd() + '/' + comic + '/' + name.group()) This can be un-commented for use in debugging
     print('==> Comic opened!')
 
 def term_download(args):
@@ -469,10 +470,13 @@ def main():
                 term_download(args)
             elif pos == '= Display Comics =':
                 li = prompt(questions, style=style)
+                print('[WIP] This function is a Work-In-Progress. Unfortunately, the webbrwser.open() may not function on your machine.\
+                Sorry for the inconvenience this may cause.')
                 show_comics(li['Comics'])
                 exit()
-            elif pos == '= Remove comics =':
-                rem_old()
+            elif pos == '= Remove old comics =':
+                ans2 = prompt(questions, style=style)
+                rem_old(ans2['Comics'])
                 exit()
     except KeyboardInterrupt:
         exit()

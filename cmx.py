@@ -11,12 +11,10 @@ from bs4 import BeautifulSoup
 from pyfiglet import Figlet
 import re
 import datetime
-import Image
 import argparse
 import sys
 import threading
-from IPython.display import display, Image
-
+import webbrowser as wb
 
 ###############
 # DIRECTORIES #
@@ -396,16 +394,18 @@ def main():
     ans = prompt(quests, style=style)
 
     # Iterate over all available menu options
-    print(ans)
-    for pos in ans['Options']:
-        if pos == '= Get comics =':
-            term_download(args)
-        elif pos == '= Display Comics =':
-            display_comics(BEETLE)
-            exit()
-        elif pos == '= Remove comics =':
-            rem_old()
-            exit()
+    try:
+        for pos in ans['Options']:
+            if pos == '= Get comics =':
+                term_download(args)
+            elif pos == '= Display Comics =':
+                display_comics(BEETLE)
+                exit()
+            elif pos == '= Remove comics =':
+                rem_old()
+                exit()
+    except:
+        exit()
 
 
 if __name__ == '__main__':

@@ -3,16 +3,13 @@ from __future__ import print_function, unicode_literals
 from PyInquirer import style_from_dict, Token, prompt, Separator
 import urllib3
 import os.path
-from os import path
 import os
-import colorama
-from colorama import init, Fore, Back, Style
+from colorama import init, Fore, Style
 from bs4 import BeautifulSoup
 from pyfiglet import Figlet
 import re
 import datetime
 import argparse
-import sys
 import threading
 import webbrowser as wb
 
@@ -143,18 +140,17 @@ def get_date():
     date = str(x.month) + '-' + str(x.day) + '-' + str(x.day)
     return date
 
-def show_comics(list):
+def show_comics(list_arg):
     """
     Wrapper function for displaying all comics from a list
     """
-    for x in list:
+    for x in list_arg:
         display_comics(coms[x])
 
 def display_comics(comic):
     """
     Displays comics in webbrowser using REGEXES!
     """
-    today = get_date()
     dirs = os.popen('ls ' + str(comic)).read()
     regex = re.compile(R'\d{1,2}-\d{1,2}-\d{4}\.(jpg|gif|png)')
     name = regex.search(dirs)
@@ -190,12 +186,12 @@ def term_download(args):
 
 
 # List parsing from the list from the prompt. Runs the get_.*() function for each comic.
-def parse_list(list):
+def parse_list(list_arg):
     """
     List parses from the prompt for downloading comics.
     Runs the get_.*() function for each comic.
     """
-    for x in list:
+    for x in list_arg:
         if x == 'XKCD':
             get_xkcd()
         elif x == 'Dilbert':
@@ -248,7 +244,7 @@ def ping(pid):
     result = os.system('ping -c 1 archlinux.org >/dev/null 2>&1')
     if result != 0:
         print(Fore.RED + '::' + Style.RESET_ALL + ' No wifi connection found.')
-        os.system('kill ' + str(pid) + ' >/dev/null 2>&1') # 
+        os.system('kill ' + str(pid) + ' >/dev/null 2>&1')
         exit()
     else:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' Wifi connection found!')
@@ -452,12 +448,12 @@ def main():
     init()
 
     # simple handler for the -l option.
-    if args.list == True:
+    if args.list is True:
         list_give()
         exit()
 
     # Do CLI download check
-    if args.download != None:
+    if args.download is not None:
         cli_get(args.download)
 
     # render banner

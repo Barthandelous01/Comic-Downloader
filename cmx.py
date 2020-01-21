@@ -165,7 +165,7 @@ def term_download(args):
     # Non-thread bound ping. Increases speed!
     pi = threading.Thread(target=ping, args=(os.getpid(),))
 
-  # Runs prompt code to get comics to download
+    # Runs prompt code to get comics to download
     answers = prompt(questions, style=style)
 
     # Start ping process now
@@ -474,7 +474,7 @@ def main():
             elif pos == '= Remove comics =':
                 rem_old()
                 exit()
-    except:
+    except KeyboardInterrupt:
         exit()
 
 

@@ -513,7 +513,7 @@ def main():
                 print('Remember to close the matplotlib window after you are done!')
                 show_comics(li['Comics'])
                 exit()
-    except KeyboardInterrupt and KeyError:
+    except:
         exit()
 
 

@@ -10,6 +10,8 @@ import re
 import datetime
 import argparse
 import threading
+import matplotlib.pyplot as plt
+import matplotlib.image as mping
 import webbrowser as wb
 
 ###############
@@ -141,7 +143,7 @@ def get_date():
     Returns a date object in the format used by curl_comic()
     """
     x = datetime.datetime.now()
-    date = str(x.month) + '-' + str(x.day) + '-' + str(x.day)
+    date = str(x.month) + '-' + str(x.day) + '-' + str(x.year)
     return date
 
 def show_comics(list_arg):
@@ -156,10 +158,12 @@ def display_comics(comic):
     Displays comics in webbrowser using REGEXES!
     """
     dirs = os.popen('ls ' + str(comic)).read()
-    regex = re.compile(R'\d{1,2}-\d{1,2}-\d{4}\.(jpg|gif|png)')
-    name = regex.search(dirs)
-    wb.open(os.getcwd() + '/' + comic + '/' + name.group())
-    # print(os.getcwd() + '/' + comic + '/' + name.group()) This can be un-commented for use in debugging
+    regex = re.compile(R'\.(jpg|gif|png)')
+    extention = regex.search(dirs)
+    name = comic + '/' + get_date() + extention.group()
+    img = mping.imread(name)
+    imgplot = plt.imshow(img)
+    plt.show()
     print('==> Comic opened!')
 
 def term_download(args):
@@ -474,8 +478,7 @@ def main():
                 term_download(args)
             elif pos == '= Display Comics =':
                 li = prompt(questions, style=style)
-                print('[WIP] This function is a Work-In-Progress. Unfortunately, the webbrwser.open() may not function on your machine.\
-                Sorry for the inconvenience this may cause.')
+                print('Remember to close the matplotlib window after you are done!')
                 show_comics(li['Comics'])
                 exit()
     except KeyboardInterrupt:

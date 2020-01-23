@@ -316,7 +316,7 @@ def get_dilbert():
     img_url = get_url(R'assets.amuniversal.com/([a-f]|\d){32}', soup)
     print('==> Downloading image')
     total = 'https://' + img_url.group()
-    curl_comic(total, DILBERT, '.png')
+    curl_comic(total, DILBERT, '.jpg')
 
 def get_garfield():
     """

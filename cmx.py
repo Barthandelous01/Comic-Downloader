@@ -419,9 +419,32 @@ def cli_rm(test):
             rem_old(['Family Circus'])
         else:
             print(Fore.RED + '::' + Style.RESET_ALL + ' Comic not known: ' + str(x))
+
+def cli_show(test):
+    """
+    Remove old files
+    """
+    # Iterate over all options and download them
+    for x in test:
+        if x == 'Dilbert':
+            display_comics(coms['Dilbert'])
+        elif x == 'Garfield':
+            display_comics(coms['Garfield'])
+        elif x == 'FarSide':
+            display_comics(coms['The Far Side'])
+        elif x == 'XKCD':
+            display_comics(coms['XKCD'])
+        elif x == 'BC':
+            display_comics(coms['BC'])
+        elif x == 'Blondie':
+            display_comics(coms['Blondie'])
+        elif x == 'BeetleBailey':
+            display_comics(coms['Beetle Bailey'])
+        elif x == 'FamilyCircus':
+            display_comics(coms['Family Circus'])
+        else:
+            print(Fore.RED + '::' + Style.RESET_ALL + ' Comic not known: ' + str(x))
     exit()
-
-
 
 def cli_get(test):
     """
@@ -472,7 +495,8 @@ def main():
     my_parser.add_argument('-d', '--download', type=str, help='Download a comic without the fancy GUI. Implies -q', nargs='+')
     my_parser.add_argument('-v', '--version', action='version', help='show version')
     my_parser.add_argument('-l', '--list', action='store_true', help='list CLI args for --download')
-    my_parser.add_argument('-r', '--remove', type=str, help='Remove old comics without the fancy GUI. Implies -q', nargs='+')
+    my_parser.add_argument('-r', '--remove', type=str, help='Remove old comics without the fancy GUI. Implies -q. Overrides -s', nargs='+')
+    my_parser.add_argument('-s', '--show', type=str, help='Show the day\'s comics without the fancy GUI. Implies -q. Overrides -d', nargs='+')
     args = my_parser.parse_args()
 
     # Initialize colors
@@ -490,6 +514,10 @@ def main():
     # Do CLI download check
     if args.download is not None:
         cli_get(args.download)
+
+    # Do CLI show check
+    if args.show is not None:
+        cli_show(args.show)
 
     # render banner
     banner(args)

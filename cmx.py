@@ -130,8 +130,11 @@ def rem_old(list_arg):
     Helps users save disk space.
     """
     for x in list_arg:
-        os.system('rm ' + coms[x] + '/* >/dev/null 2>&1')
-        print('==> cleaned ' + coms[x])
+        result = os.system('rm ' + coms[x] + '/* >/dev/null 2>&1')
+        if result == 0:
+            print(Fore.GREEN + '::' + Style.RESET_ALL + ' Cleaned ' + coms[x])
+        else:
+            print(Fore.RED + '::' + Style.RESET_ALL + ' Did not find anything in ' + coms[x])
 
 def get_date():
     """

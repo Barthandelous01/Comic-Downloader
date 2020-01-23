@@ -89,13 +89,13 @@ quests = [
         'name': 'Options',
         'choices': [
             {
+                'name': '= Remove old comics ='
+            },
+            {
                 'name': '= Get comics ='
             },
             {
                 'name': '= Display Comics ='
-            },
-            {
-                'name': '= Remove old comics ='
             }
         ]
     }
@@ -465,17 +465,19 @@ def main():
     # Iterate over all available menu options
     try:
         for pos in ans['Options']:
-            if pos == '= Get comics =':
+            if pos == '= Remove old comics =':
+                try:
+                    ans2 = prompt(questions, style=style)
+                except KeyError:
+                    exit()
+                rem_old(ans2['Comics'])
+            elif pos == '= Get comics =':
                 term_download(args)
             elif pos == '= Display Comics =':
                 li = prompt(questions, style=style)
                 print('[WIP] This function is a Work-In-Progress. Unfortunately, the webbrwser.open() may not function on your machine.\
                 Sorry for the inconvenience this may cause.')
                 show_comics(li['Comics'])
-                exit()
-            elif pos == '= Remove old comics =':
-                ans2 = prompt(questions, style=style)
-                rem_old(ans2['Comics'])
                 exit()
     except KeyboardInterrupt:
         exit()

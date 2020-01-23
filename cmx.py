@@ -188,7 +188,6 @@ def term_download(args):
         print('==> Aborting')
         exit()
 
-# List parsing from the list from the prompt. Runs the get_.*() function for each comic.
 def parse_list(list_arg):
     """
     List parses from the prompt for downloading comics.
@@ -212,7 +211,6 @@ def parse_list(list_arg):
         elif x == 'Family Circus':
             get_circus()
 
-# file check function
 def check_dir(directory, name):
     """
     Checks the individual functions
@@ -223,7 +221,6 @@ def check_dir(directory, name):
     else:
         print(Fore.GREEN + '::' + Style.RESET_ALL + ' ' + name + ' directory found')
 
-# Directory function check
 def check_files():
     """
     Directory check wrapper
@@ -231,7 +228,6 @@ def check_files():
     for x in coms:
         check_dir(coms[x], x)
 
-# Network test function
 def ping(pid):
     """
     I really hate this, but it's the only way at the moment.

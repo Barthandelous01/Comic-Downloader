@@ -445,6 +445,7 @@ def main():
     my_parser.add_argument('-d', '--download', type=str, help='Download a comic without the fancy GUI. Implies -q', nargs='+')
     my_parser.add_argument('-v', '--version', action='version', help='show version')
     my_parser.add_argument('-l', '--list', action='store_true', help='list CLI args for --download')
+    my_parser.add_argument('-r', '--remove', type=str, help='Remove old comics without the fancy GUI. Implies -q', nargs='+')
     args = my_parser.parse_args()
 
     # Initialize colors
@@ -481,7 +482,7 @@ def main():
                 print('Remember to close the matplotlib window after you are done!')
                 show_comics(li['Comics'])
                 exit()
-    except KeyboardInterrupt:
+    except KeyboardInterrupt and KeyError:
         exit()
 
 

@@ -12,7 +12,6 @@ import argparse
 import threading
 import matplotlib.pyplot as plt
 import matplotlib.image as mping
-import webbrowser as wb
 
 ###############
 # DIRECTORIES #

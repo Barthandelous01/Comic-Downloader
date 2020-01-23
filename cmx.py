@@ -395,6 +395,34 @@ def list_give():
     """
     print('Options are:\n\tDilbert\n\tGarfield\n\tFarSide\n\tXKCD\n\tBC\n\tBlondie\n\tBeetleBailey\n\tFamilyCircus')
 
+def cli_rm(test):
+    """
+    Remove old files
+    """
+    # Iterate over all options and download them
+    for x in test:
+        if x == 'Dilbert':
+            rem_old(['Dilbert'])
+        elif x == 'Garfield':
+            rem_old(['Garfield'])
+        elif x == 'FarSide':
+            rem_old(['The Far Side'])
+        elif x == 'XKCD':
+            rem_old(['XKCD'])
+        elif x == 'BC':
+            rem_old(['BC'])
+        elif x == 'Blondie':
+            rem_old(['Blondie'])
+        elif x == 'BeetleBailey':
+            rem_old(['Beetle Bailey'])
+        elif x == 'FamilyCircus':
+            rem_old(['Family Circus'])
+        else:
+            print(Fore.RED + '::' + Style.RESET_ALL + ' Comic not known: ' + str(x))
+    exit()
+
+
+
 def cli_get(test):
     """
     ClI 'main' function.
@@ -455,6 +483,10 @@ def main():
         list_give()
         exit()
 
+    # Do CLI rm check
+    if args.remove is not None:
+        cli_rm(args.remove)
+
     # Do CLI download check
     if args.download is not None:
         cli_get(args.download)
@@ -481,7 +513,7 @@ def main():
                 print('Remember to close the matplotlib window after you are done!')
                 show_comics(li['Comics'])
                 exit()
-    except KeyboardInterrupt and KeyError:
+    except:
         exit()
 
 
